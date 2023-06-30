@@ -1,7 +1,6 @@
 package ac.uk.bolton.ecommercebackend.controller;
 
 import ac.uk.bolton.ecommercebackend.dto.TokenDTO;
-import ac.uk.bolton.ecommercebackend.dto.common.ResponsePayload;
 import ac.uk.bolton.ecommercebackend.exception.InternalServerErrorException;
 import ac.uk.bolton.ecommercebackend.request.LoginRequest;
 import ac.uk.bolton.ecommercebackend.request.SignupRequest;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,19 +32,16 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/signup")
-    public ResponseEntity<ResponsePayload> signup(@RequestBody SignupRequest signupRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.save(signupRequest));
-
+    public AjaxResponse<Object> signup(@RequestBody SignupRequest signupRequest) {
+        try {
+            userService.save(signupRequest);
+        } catch (DataIntegrityViolationException e) {
+            return AjaxResponse.error(HttpStatus.CONFLICT, "Username already exists");
+        } catch (Exception e) {
+            return AjaxResponse.error("Unknown error occurred");
+        }
+        return AjaxResponse.success();
     }
-//        try {
-//            userService.save(signupRequest);
-//        } catch (DataIntegrityViolationException e) {
-//            return AjaxResponse.error(HttpStatus.CONFLICT, "Username already exists");
-//        } catch (Exception e) {
-//            return AjaxResponse.error("Unknown error occurred");
-//        }
-//        return AjaxResponse.success();
-//    }
 
     @PostMapping("/login")
     public AjaxResponse<Object> login(HttpServletRequest request, @RequestBody LoginRequest loginRequest) {
