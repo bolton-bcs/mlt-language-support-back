@@ -2,9 +2,11 @@ package ac.uk.bolton.ecommercebackend.service.impl;
 
 import ac.uk.bolton.ecommercebackend.dto.TokenDTO;
 import ac.uk.bolton.ecommercebackend.dto.UserDTO;
+import ac.uk.bolton.ecommercebackend.dto.common.ResponsePayload;
 import ac.uk.bolton.ecommercebackend.entity.User;
 import ac.uk.bolton.ecommercebackend.enums.RoleType;
 import ac.uk.bolton.ecommercebackend.exception.InternalServerErrorException;
+import ac.uk.bolton.ecommercebackend.exception.custom.UnmanagedException;
 import ac.uk.bolton.ecommercebackend.repository.UserRepository;
 import ac.uk.bolton.ecommercebackend.request.LoginRequest;
 import ac.uk.bolton.ecommercebackend.request.SignupRequest;
@@ -13,6 +15,7 @@ import ac.uk.bolton.ecommercebackend.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,12 +47,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final JwtUtil jwtUtils;
 
     @Override
-    public UserDTO save(SignupRequest signupRequest) {
-        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        User user = mapper.map(signupRequest, User.class);
-        user.setRole(RoleType.ROLE_USER.name());
-        User registeUser = userRepository.save(user);
-        return mapper.map(registeUser, UserDTO.class);
+    public ResponsePayload save(SignupRequest signupRequest) {
+        try {
+            signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+            User user = mapper.map(signupRequest, User.class);
+            user.setRole(RoleType.ROLE_USER.name());
+            User registeUser = userRepository.save(user);
+//            return mapper.map(registeUser, UserDTO.class);
+            return new ResponsePayload(HttpStatus.OK.getReasonPhrase(), registeUser, HttpStatus.OK);
+        }catch (Exception e){
+            throw new UnmanagedException(e.getMessage());
+        }
+
+
     }
 
     @Override
