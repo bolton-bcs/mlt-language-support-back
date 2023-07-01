@@ -36,7 +36,7 @@ public class AuthController {
         try {
             userService.save(signupRequest);
         } catch (DataIntegrityViolationException e) {
-            return AjaxResponse.error(HttpStatus.CONFLICT, "Username already exists");
+            return AjaxResponse.error(HttpStatus.CONFLICT, "Email already exists");
         } catch (Exception e) {
             return AjaxResponse.error("Unknown error occurred");
         }
@@ -55,11 +55,11 @@ public class AuthController {
             }
         } catch (AuthenticationException e) {
             if (e.getMessage().equals("Bad credentials")) {
-                throw new BadCredentialsException("Invalid username or password");
+                throw new BadCredentialsException("Invalid email or password");
             }
 
             if (e.getMessage().equals("Incorrect result size: expected 1, actual 0")) {
-                throw new BadCredentialsException("Invalid username or password");
+                throw new BadCredentialsException("Invalid email or password");
             }
 
             throw new InternalServerErrorException("Unknown error occurred");
