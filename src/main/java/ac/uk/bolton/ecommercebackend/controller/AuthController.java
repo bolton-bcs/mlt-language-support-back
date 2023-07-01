@@ -1,6 +1,7 @@
 package ac.uk.bolton.ecommercebackend.controller;
 
 import ac.uk.bolton.ecommercebackend.dto.TokenDTO;
+import ac.uk.bolton.ecommercebackend.dto.common.ResponsePayload;
 import ac.uk.bolton.ecommercebackend.exception.InternalServerErrorException;
 import ac.uk.bolton.ecommercebackend.request.LoginRequest;
 import ac.uk.bolton.ecommercebackend.request.SignupRequest;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,16 +34,19 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/signup")
-    public AjaxResponse<Object> signup(@RequestBody SignupRequest signupRequest) {
-        try {
-            userService.save(signupRequest);
-        } catch (DataIntegrityViolationException e) {
-            return AjaxResponse.error(HttpStatus.CONFLICT, "Email already exists");
-        } catch (Exception e) {
-            return AjaxResponse.error("Unknown error occurred");
-        }
-        return AjaxResponse.success();
+    public ResponseEntity<ResponsePayload> signup(@RequestBody SignupRequest signupRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.save(signupRequest));
+
     }
+//        try {
+//            userService.save(signupRequest);
+//        } catch (DataIntegrityViolationException e) {
+//            return AjaxResponse.error(HttpStatus.CONFLICT, "Username already exists");
+//        } catch (Exception e) {
+//            return AjaxResponse.error("Unknown error occurred");
+//        }
+//        return AjaxResponse.success();
+//    }
 
     @PostMapping("/login")
     public AjaxResponse<Object> login(HttpServletRequest request, @RequestBody LoginRequest loginRequest) {
@@ -55,11 +60,11 @@ public class AuthController {
             }
         } catch (AuthenticationException e) {
             if (e.getMessage().equals("Bad credentials")) {
-                throw new BadCredentialsException("Invalid email or password");
+                throw new BadCredentialsException("Invalid username or password");
             }
 
             if (e.getMessage().equals("Incorrect result size: expected 1, actual 0")) {
-                throw new BadCredentialsException("Invalid email or password");
+                throw new BadCredentialsException("Invalid username or password");
             }
 
             throw new InternalServerErrorException("Unknown error occurred");
