@@ -16,6 +16,9 @@ public class Product {
     private String name;
 
     @Column()
+    private String categoryName;
+
+    @Column()
     private String description;
 
     @Column()
