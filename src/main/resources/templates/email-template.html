@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verify your email address</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333333;
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #666666;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p th:text="${message}"></p>
+    <p>
+        Click the button below to reset your password
+    </p>
+    <p>
+        <a class="cta-button" th:href="@{http://localhost:8080/api/v1/auth/verify/{token}(token=${token})}">Verify email address</a>
+    </p>
+</div>
+</body>
+</html>

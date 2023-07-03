@@ -5,6 +5,7 @@ import ac.uk.bolton.ecommercebackend.dto.UserDTO;
 import ac.uk.bolton.ecommercebackend.dto.common.ResponsePayload;
 import ac.uk.bolton.ecommercebackend.request.LoginRequest;
 import ac.uk.bolton.ecommercebackend.request.SignupRequest;
+import ac.uk.bolton.ecommercebackend.request.UpdatePasswordRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 
@@ -19,4 +20,8 @@ public interface UserService {
     UserDTO getCurrentUser();
 
     UserDTO updateCurrentUser(UserDTO userDTO);
+
+    void forgotPassword(String email) throws Exception;
+
+    UserDTO updatePassword(UpdatePasswordRequest request) throws Exception;
 }

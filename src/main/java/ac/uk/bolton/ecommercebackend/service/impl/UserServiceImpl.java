@@ -3,19 +3,25 @@ package ac.uk.bolton.ecommercebackend.service.impl;
 import ac.uk.bolton.ecommercebackend.dto.TokenDTO;
 import ac.uk.bolton.ecommercebackend.dto.UserDTO;
 import ac.uk.bolton.ecommercebackend.dto.common.ResponsePayload;
+import ac.uk.bolton.ecommercebackend.entity.ForgotPassword;
 import ac.uk.bolton.ecommercebackend.entity.User;
 import ac.uk.bolton.ecommercebackend.enums.RoleType;
 import ac.uk.bolton.ecommercebackend.exception.InternalServerErrorException;
 import ac.uk.bolton.ecommercebackend.exception.custom.UnmanagedException;
+import ac.uk.bolton.ecommercebackend.repository.ForgotPasswordRepository;
 import ac.uk.bolton.ecommercebackend.repository.UserRepository;
 import ac.uk.bolton.ecommercebackend.request.LoginRequest;
 import ac.uk.bolton.ecommercebackend.request.SignupRequest;
+import ac.uk.bolton.ecommercebackend.request.UpdatePasswordRequest;
+import ac.uk.bolton.ecommercebackend.service.EmailService;
 import ac.uk.bolton.ecommercebackend.service.UserService;
 import ac.uk.bolton.ecommercebackend.util.JwtUtil;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,9 +34,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,10 +45,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final ForgotPasswordRepository forgotPasswordRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
-
     private final JwtUtil jwtUtils;
+
+    private final EmailService emailService;
 
     @Override
     public ResponsePayload save(SignupRequest signupRequest) {
@@ -121,6 +127,59 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setAddress(user.getAddress() == null && userDTO.getAddress().isEmpty() ? null : userDTO.getAddress());
 
         User updatedUser = userRepository.save(user);
+
+        return mapper.map(updatedUser, UserDTO.class);
+    }
+
+    @Override
+    public void forgotPassword(String email) throws UsernameNotFoundException, MessagingException {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        ForgotPassword forgotPasswordRepositoryByEmail = forgotPasswordRepository.findByEmail(email);
+
+        if (forgotPasswordRepositoryByEmail != null) {
+            forgotPasswordRepository.delete(forgotPasswordRepositoryByEmail);
+        }
+
+        String token = UUID.randomUUID().toString().split("-")[0];
+
+        ForgotPassword forgotPassword = new ForgotPassword();
+        forgotPassword.setToken(token);
+        forgotPassword.setEmail(user.getEmail());
+        forgotPassword.setCreated_at(new Date());
+        forgotPasswordRepository.save(forgotPassword);
+
+        String to = user.getEmail();
+        String subject = "Forgot your password? We can help.";
+        String body = "";
+
+        emailService.sendEmail(to, subject, body,token);
+
+    }
+
+    @Override
+    public UserDTO updatePassword(UpdatePasswordRequest request) throws Exception {
+
+        ForgotPassword forgotPassword = forgotPasswordRepository.findByToken(request.getToken());
+
+        if (forgotPassword == null) {
+            throw new Exception("Invalid token");
+        }
+
+        User user = userRepository.findByEmail(forgotPassword.getEmail());
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        User updatedUser = userRepository.save(user);
+
+        forgotPasswordRepository.delete(forgotPassword);
 
         return mapper.map(updatedUser, UserDTO.class);
     }
