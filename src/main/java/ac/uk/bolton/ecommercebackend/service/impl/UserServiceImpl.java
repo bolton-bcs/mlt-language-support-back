@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             tokenDTO.setRefresh_token(refreshToken);
             tokenDTO.setExpires_in(tokenExpirationTime);
             tokenDTO.setToken_type("Bearer");
+            tokenDTO.setRole(roles.get(0));
 
         } catch (Exception e) {
             throw new InternalServerErrorException("Internal server error");
