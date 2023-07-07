@@ -15,4 +15,5 @@ public class TokenDTO {
     private String refresh_token;
     private String token_type;
     private long expires_in;
+    private String role;
 }
