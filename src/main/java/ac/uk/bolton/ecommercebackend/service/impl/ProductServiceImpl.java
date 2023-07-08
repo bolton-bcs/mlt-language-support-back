@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             Product product = new Product();
             product.setName(productDto.getName());
-            product.setCategoryName(productDto.getCategoryName());
+            product.setCategoryId(productDto.getCategoryId());
             product.setDescription(productDto.getDescription());
             product.setImageUrl(productDto.getImageUrl());
             product.setPrice(productDto.getPrice());
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
             if (productRepository.findById(productDto.getId()).isPresent()) {
                 Product product = productRepository.findProductById(productDto.getId());
                 product.setName(productDto.getName());
-                product.setCategoryName(productDto.getCategoryName());
+                product.setCategoryId(productDto.getCategoryId());
                 product.setDescription(productDto.getDescription());
                 product.setImageUrl(productDto.getImageUrl());
                 product.setPrice(productDto.getPrice());

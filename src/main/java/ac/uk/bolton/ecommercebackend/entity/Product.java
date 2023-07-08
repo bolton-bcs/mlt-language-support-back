@@ -16,7 +16,7 @@ public class Product {
     private String name;
 
     @Column()
-    private String categoryName;
+    private Long categoryId;
 
     @Column()
     private String description;

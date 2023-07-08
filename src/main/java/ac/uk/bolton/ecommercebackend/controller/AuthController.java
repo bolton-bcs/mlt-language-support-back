@@ -37,17 +37,8 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<ResponsePayload> signup(@RequestBody SignupRequest signupRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(signupRequest));
-
     }
-//        try {
-//            userService.save(signupRequest);
-//        } catch (DataIntegrityViolationException e) {
-//            return AjaxResponse.error(HttpStatus.CONFLICT, "Username already exists");
-//        } catch (Exception e) {
-//            return AjaxResponse.error("Unknown error occurred");
-//        }
-//        return AjaxResponse.success();
-//    }
+
 
     @PostMapping("/login")
     public AjaxResponse<Object> login(HttpServletRequest request, @RequestBody LoginRequest loginRequest) {
