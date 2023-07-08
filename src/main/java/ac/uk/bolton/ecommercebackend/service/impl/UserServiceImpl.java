@@ -21,7 +21,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -59,7 +58,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             User user = mapper.map(signupRequest, User.class);
             user.setRole(RoleType.ROLE_USER.name());
             User registeUser = userRepository.save(user);
-//            return mapper.map(registeUser, UserDTO.class);
             return new ResponsePayload(HttpStatus.OK.getReasonPhrase(), registeUser, HttpStatus.OK);
         }catch (Exception e){
             throw new UnmanagedException(e.getMessage());
