@@ -10,4 +10,6 @@ import ac.uk.bolton.ecommercebackend.dto.common.ResponsePayload;
 
 public interface OrdersService {
     ResponsePayload placeOrder(OrdersDTO ordersDTO);
+
+    ResponsePayload getAllApprovalOrders();
 }

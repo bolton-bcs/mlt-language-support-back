@@ -33,4 +33,13 @@ public class OrdersServiceImpl implements OrdersService {
                 HttpStatus.OK
         );
     }
+
+    @Override
+    public ResponsePayload getAllApprovalOrders() {
+        return new ResponsePayload(
+                HttpStatus.OK.getReasonPhrase(),
+                ordersRepository.getAllApprovalOrders(),
+                HttpStatus.OK
+        );
+    }
 }
