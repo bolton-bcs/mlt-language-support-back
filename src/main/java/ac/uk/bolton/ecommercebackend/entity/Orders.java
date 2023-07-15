@@ -5,6 +5,7 @@ package ac.uk.bolton.ecommercebackend.entity;
     @created 7/8/23 - 8:21 PM   
 */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +26,6 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false, name = "product_id")
-    private Long productId;
     @Column(nullable = false)
     private Integer qty;
     @Column(nullable = false)
@@ -40,12 +39,17 @@ public class Orders {
     @Column(columnDefinition = "boolean default false")
     private Boolean status;
 
-    public Orders(Long productId, Integer qty, Double price, String country, String deliveryAddress, Date expectedDate) {
-        this.productId = productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false, referencedColumnName = "id")
+    @JsonIgnore
+    private Product product;
+
+    public Orders(Integer qty, Double price, String country, String deliveryAddress, Date expectedDate, Product product) {
         this.qty = qty;
         this.price = price;
         this.country = country;
         this.deliveryAddress = deliveryAddress;
         this.expectedDate = expectedDate;
+        this.product = product;
     }
 }

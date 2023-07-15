@@ -8,7 +8,9 @@ package ac.uk.bolton.ecommercebackend.service.impl;
 import ac.uk.bolton.ecommercebackend.dto.OrdersDTO;
 import ac.uk.bolton.ecommercebackend.dto.common.ResponsePayload;
 import ac.uk.bolton.ecommercebackend.entity.Orders;
+import ac.uk.bolton.ecommercebackend.entity.Product;
 import ac.uk.bolton.ecommercebackend.repository.OrdersRepository;
+import ac.uk.bolton.ecommercebackend.repository.ProductRepository;
 import ac.uk.bolton.ecommercebackend.service.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,17 +21,19 @@ import org.springframework.stereotype.Service;
 public class OrdersServiceImpl implements OrdersService {
 
     private final OrdersRepository ordersRepository;
+    private final ProductRepository productRepository;
     @Override
     public ResponsePayload placeOrder(OrdersDTO ordersDTO) {
+        Product proxyProduct = productRepository.getReferenceById(ordersDTO.productId());
         return new ResponsePayload(
                 HttpStatus.OK.getReasonPhrase(),
                 ordersRepository.save(new Orders(
-                        ordersDTO.productId(),
                         ordersDTO.qty(),
                         ordersDTO.price(),
                         ordersDTO.country(),
                         ordersDTO.deliveryAddress(),
-                        ordersDTO.expectedDate()
+                        ordersDTO.expectedDate(),
+                        proxyProduct
                 )),
                 HttpStatus.OK
         );
