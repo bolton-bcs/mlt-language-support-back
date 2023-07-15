@@ -8,6 +8,7 @@ package ac.uk.bolton.ecommercebackend.dto;
 import java.util.Date;
 
 public record OrdersDTO(
+        Long productId,
         Integer qty,
         Double price,
         String country,

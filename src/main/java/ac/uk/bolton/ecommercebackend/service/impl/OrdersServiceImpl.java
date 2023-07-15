@@ -24,6 +24,7 @@ public class OrdersServiceImpl implements OrdersService {
         return new ResponsePayload(
                 HttpStatus.OK.getReasonPhrase(),
                 ordersRepository.save(new Orders(
+                        ordersDTO.productId(),
                         ordersDTO.qty(),
                         ordersDTO.price(),
                         ordersDTO.country(),

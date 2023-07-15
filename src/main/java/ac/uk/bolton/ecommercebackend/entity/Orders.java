@@ -11,7 +11,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +25,8 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false, name = "product_id")
+    private Long productId;
     @Column(nullable = false)
     private Integer qty;
     @Column(nullable = false)
@@ -36,7 +40,8 @@ public class Orders {
     @Column(columnDefinition = "boolean default false")
     private Boolean status;
 
-    public Orders(Integer qty, Double price, String country, String deliveryAddress, Date expectedDate) {
+    public Orders(Long productId, Integer qty, Double price, String country, String deliveryAddress, Date expectedDate) {
+        this.productId = productId;
         this.qty = qty;
         this.price = price;
         this.country = country;
