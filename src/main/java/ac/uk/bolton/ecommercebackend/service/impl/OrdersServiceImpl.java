@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrdersServiceImpl implements OrdersService {
@@ -44,13 +46,13 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public ResponsePayload getAllApprovalOrders() {
-        return new ResponsePayload(
-                HttpStatus.OK.getReasonPhrase(),
+    public List<Orders> getAllApprovalOrders() {
+//        return new ResponsePayload(
+//                HttpStatus.OK.getReasonPhrase(),
 //productRepository.findAll(),
-                ordersRepository.getAllApprovalOrders(),
+                return ordersRepository.getAllApprovalOrders();
 //                ordersRepository.findAll(),
-                HttpStatus.OK
-        );
+//                HttpStatus.OK
+//        );
     }
 }
