@@ -3,6 +3,9 @@ package ac.uk.bolton.ecommercebackend.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static jakarta.persistence.GenerationType.AUTO;
 @Data
 @Entity
@@ -32,7 +35,4 @@ public class Product {
 
     @Column()
     private Boolean status;
-
-
-
 }

@@ -5,13 +5,16 @@ package ac.uk.bolton.ecommercebackend.entity;
     @created 7/8/23 - 8:21 PM   
 */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -36,11 +39,17 @@ public class Orders {
     @Column(columnDefinition = "boolean default false")
     private Boolean status;
 
-    public Orders(Integer qty, Double price, String country, String deliveryAddress, Date expectedDate) {
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "product_id", nullable = false, referencedColumnName = "id")
+    @JsonIgnore
+    private Product product;
+
+    public Orders(Integer qty, Double price, String country, String deliveryAddress, Date expectedDate, Product product) {
         this.qty = qty;
         this.price = price;
         this.country = country;
         this.deliveryAddress = deliveryAddress;
         this.expectedDate = expectedDate;
+        this.product = product;
     }
 }
