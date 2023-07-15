@@ -39,7 +39,7 @@ public class Orders {
     @Column(columnDefinition = "boolean default false")
     private Boolean status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_id", nullable = false, referencedColumnName = "id")
     @JsonIgnore
     private Product product;

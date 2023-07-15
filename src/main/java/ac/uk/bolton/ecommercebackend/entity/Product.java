@@ -35,7 +35,4 @@ public class Product {
 
     @Column()
     private Boolean status;
-
-    @OneToMany(mappedBy = "product")
-    private List<Orders> ordersList = new ArrayList<>();
 }

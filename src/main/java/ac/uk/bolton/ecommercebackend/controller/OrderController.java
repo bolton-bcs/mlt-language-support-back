@@ -26,6 +26,7 @@ public class OrderController {
 
     @GetMapping("/pending")
     public ResponseEntity<ResponsePayload> getAllApprovalOrders() {
+        System.out.println(ordersService.getAllApprovalOrders());
         return ResponseEntity.status(HttpStatus.OK).body(ordersService.getAllApprovalOrders());
     }
 }

@@ -25,16 +25,20 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public ResponsePayload placeOrder(OrdersDTO ordersDTO) {
         Product proxyProduct = productRepository.getReferenceById(ordersDTO.productId());
+
+        Product product = productRepository.findProductById(ordersDTO.productId());
+        Orders orders = new Orders(
+                ordersDTO.qty(),
+                ordersDTO.price(),
+                ordersDTO.country(),
+                ordersDTO.deliveryAddress(),
+                ordersDTO.expectedDate(),
+                proxyProduct);
+//        product.getOrdersList().add(orders);
+
         return new ResponsePayload(
                 HttpStatus.OK.getReasonPhrase(),
-                ordersRepository.save(new Orders(
-                        ordersDTO.qty(),
-                        ordersDTO.price(),
-                        ordersDTO.country(),
-                        ordersDTO.deliveryAddress(),
-                        ordersDTO.expectedDate(),
-                        proxyProduct
-                )),
+                ordersRepository.save(orders),
                 HttpStatus.OK
         );
     }
@@ -43,7 +47,9 @@ public class OrdersServiceImpl implements OrdersService {
     public ResponsePayload getAllApprovalOrders() {
         return new ResponsePayload(
                 HttpStatus.OK.getReasonPhrase(),
+//productRepository.findAll(),
                 ordersRepository.getAllApprovalOrders(),
+//                ordersRepository.findAll(),
                 HttpStatus.OK
         );
     }
