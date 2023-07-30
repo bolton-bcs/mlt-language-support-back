@@ -11,14 +11,18 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
     private final ProductRepository productRepository;
     private final ModelMapper mapper;
 
@@ -29,10 +33,16 @@ public class ProductServiceImpl implements ProductService {
             product.setName(productDto.getName());
             product.setCategoryId(productDto.getCategoryId());
             product.setDescription(productDto.getDescription());
-            product.setImageUrl(productDto.getImageUrl());
             product.setPrice(productDto.getPrice());
             product.setQty(productDto.getQty());
             product.setStatus(productDto.getStatus());
+
+            StringBuilder fileNames = new StringBuilder();
+            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, productDto.getImageUrl().getOriginalFilename());
+            fileNames.append(productDto.getImageUrl().getOriginalFilename());
+            Files.write(fileNameAndPath, productDto.getImageUrl().getBytes());
+            product.setImageUrl(fileNames.toString());
+
             Product result  = productRepository.save(product);
             return new ResponsePayload(HttpStatus.OK.getReasonPhrase(), result, HttpStatus.OK);
         }catch (Exception e){
@@ -49,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
                 product.setName(productDto.getName());
                 product.setCategoryId(productDto.getCategoryId());
                 product.setDescription(productDto.getDescription());
-                product.setImageUrl(productDto.getImageUrl());
+//                product.setImageUrl(productDto.getImageUrl());
                 product.setPrice(productDto.getPrice());
                 product.setQty(productDto.getQty());
                 product.setStatus(productDto.getStatus());

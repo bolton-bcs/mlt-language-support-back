@@ -4,6 +4,9 @@ import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +16,7 @@ public class ProductDTO {
     private String name;
     private Long categoryId;
     private String description;
-    private String imageUrl;
+    private MultipartFile imageUrl;
     private Double price;
     private Integer qty;
     private Boolean status;
